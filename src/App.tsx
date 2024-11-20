@@ -8,6 +8,7 @@ import Home from './container/Home/Home.tsx';
 
 const App = () => {
   const { pathname } = useLocation();
+
   return (
     <div className='container'>
       <header>

@@ -1,11 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../app/store.ts';
-import { fetchDeletePizza } from '../../thunk/thunk.ts';
+import { fetchAllPizza, fetchDeletePizza } from '../../thunk/thunk.ts';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Admin = () => {
   const pizza = useSelector((state: RootState) => state.pizza.crud);
   const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() =>{
+    dispatch(fetchAllPizza())
+  }, [dispatch])
 
   const deletePizza = async (id: string) =>{
     await dispatch(fetchDeletePizza(id));

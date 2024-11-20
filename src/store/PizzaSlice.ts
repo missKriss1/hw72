@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchAddNewPizza, fetchAllPizza, fetchDeletePizza } from '../thunk/thunk.ts';
+import { Crud } from '../types';
 
 interface CrudPizzaState{
   crud: Crud[];
