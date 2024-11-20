@@ -1,23 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../app/store.ts';
-import { fetchAddNewPizza, fetchAllPizza } from '../../thunk/thunk.ts';
+import { fetchAddNewPizza, fetchAllPizza, fetchEditPizza } from '../../thunk/thunk.ts';
 import { useNavigate } from 'react-router-dom';
 
-const initialStateByPizza = {
-  id: '',
-  title: '',
-  price: 0,
-  image: '',
+interface Props{
+  onSubmit:(pizza: Crud) => void;
+  isEdit: boolean;
+  pizza: Crud | null;
 }
 
-const FormPizza = () => {
+
+const FormPizza: React.FC <Props> = ({onSubmit, isEdit, pizza}) => {
+  const initialStateByPizza ={
+    id: pizza?.id || '',
+    title: pizza?.title || '',
+    price: pizza?.price || 0,
+    image: pizza?.image || ''
+  }
   const [newPizza, setNewPizza] = useState<Crud>(initialStateByPizza);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
-  const changepizza = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() =>{
+    if(isEdit && pizza){
+      setNewPizza(pizza);
+    }
+  }, [isEdit, pizza]);
+
+  const changePizza = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewPizza((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -26,9 +38,15 @@ const FormPizza = () => {
 
   const onSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    await dispatch(fetchAddNewPizza(newPizza));
+    if(isEdit){
+      await dispatch(fetchEditPizza({ id: newPizza.id, pizza: newPizza }))
+    }else{
+      await dispatch(fetchAddNewPizza(newPizza));
+    }
     await dispatch(fetchAllPizza())
     navigate('/')
+    onSubmit(newPizza)
+
   }
   return (
     <div>
@@ -39,7 +57,7 @@ const FormPizza = () => {
           type='text'
           name='title'
           value={newPizza.title}
-          onChange={changepizza}
+          onChange={changePizza}
         />
         <label className='form-label mt-2'>Pizza prices:</label>
         <input
@@ -47,7 +65,7 @@ const FormPizza = () => {
           type='number'
           name='price'
           value={newPizza.price}
-          onChange={changepizza}
+          onChange={changePizza}
         />
         <label className='form-label mt-2'>Pizza photo:</label>
         <input
@@ -55,9 +73,11 @@ const FormPizza = () => {
           type='text'
           name='image'
           value={newPizza.image}
-          onChange={changepizza}
+          onChange={changePizza}
         />
-        <button className='btn bg-black text-white mt-3'>Add</button>
+        <button className='btn bg-black text-white mt-3'>
+          {isEdit ? "Edit contact" : "Add contact"}
+        </button>
       </form>
     </div>
   );

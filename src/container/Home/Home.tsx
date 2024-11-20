@@ -1,19 +1,19 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../app/store.ts';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../app/store.ts';
 import { Link } from 'react-router-dom';
-import { fetchDeletePizza } from '../../thunk/thunk.ts';
 
 const Home = () => {
   const pizza = useSelector((state: RootState) => state.pizza.crud);
-  const dispatch: AppDispatch = useDispatch();
-
-  const deletePizza = async (id: string) =>{
-    await dispatch(fetchDeletePizza(id));
-    console.log(id);
-  }
 
   return (
     <div>
+      <nav className="navbar navbar-dark bg-body mb-4 ">
+        <div className="container-fluid border-bottom d-flex justify-content-between">
+          <Link className="navbar-brand text-black fw-bold fs-2 mt-4" to="/admin">
+            Turtle Pizza
+          </Link>
+        </div>
+      </nav>
       {pizza && pizza.length > 0 ? (
         pizza.map((pizza) => (
           <div key={pizza.id}>
@@ -28,16 +28,6 @@ const Home = () => {
               <div className="col-3">
                 <h3 className="mt-4">{pizza.title}</h3>
                 <p>Price: <strong>{pizza.price} KGS</strong></p>
-              </div>
-              <div className='col-4 mt-4 ms-4'>
-                <button className="btn bg-black mt-3">
-                  <Link to='/edit-pizza' className='text-white text-decoration-none'>
-                    Edit
-                  </Link>
-                </button>
-                <button className='btn bg-danger text-white ms-2 mt-3' onClick={() => deletePizza(pizza.id)}>
-                  Delete
-                </button>
               </div>
             </div>
           </div>

@@ -55,7 +55,7 @@ const pizzaSlice = createSlice({
       .addCase(fetchDeletePizza.rejected, (state) => {
         state.loading = false;
         state.error = true;
-      });
+      })
   }
 })
 
