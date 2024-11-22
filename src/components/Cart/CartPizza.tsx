@@ -14,7 +14,8 @@ interface Props {
 const CartPizza: React.FC<Props> = ({ order, pizzaList }) => {
   const [modal, setModal] = useState(false);
   const dispatch: AppDispatch = useDispatch();
-  const delivery = 150;
+
+  const devilery = 150
 
   let  total = Object.keys(order).reduce((acc, itemId) => {
     if (order[itemId]) {
@@ -24,7 +25,7 @@ const CartPizza: React.FC<Props> = ({ order, pizzaList }) => {
     return acc;
   }, 0);
 
-  const totalWithDelivery = total + delivery
+  const devilertWithTotal = total + devilery
 
   return (
     <div>
@@ -32,20 +33,33 @@ const CartPizza: React.FC<Props> = ({ order, pizzaList }) => {
         {Object.keys(pizzaList).map(pizzaId => {
           const pizza = {...pizzaList[pizzaId], id: pizzaId};
           if (order[pizzaId]) {
-            return (<div>{pizza.title} x {order[pizzaId]}
-              <button className="btn btn-danger ms-4" onClick={() => dispatch(deletePizzaInCart(pizza))}>X</button>
-            </div>)
+            return (<div>{pizza.title} x{order[pizzaId]} <button className='btn btn-danger ms-4' onClick={() => dispatch(deletePizzaInCart(pizza))}>X</button></div>)
           }
         })}
+
         <hr/>
+
         <div>
-          <p>Total: <strong>{total} KGS</strong></p>
-          <p>Delivery: <strong>{delivery} KGS</strong></p>
-          <p>Order total: <strong>{totalWithDelivery} KGS</strong></p>
+          <p>Devilery: <strong>{devilery} som</strong></p>
+          <p>Total: <strong>{total} som</strong></p>
+          <p>Total with devilery: <strong>{devilertWithTotal} som</strong></p>
         </div>
-        <button className="btn bg-dark text-white" onClick={() => dispatch(addNewOrderUser({order: order}))}>Order
-        </button>
+
+        <button className="btn btn-primary" onClick={() => dispatch(addNewOrderUser({order: order}))}>Order</button>
       </Modal>
+      <div>
+        <h4>Order total: <strong>{total} KGS</strong></h4>
+        <button className="btn bg-black text-white" onClick={() => setModal(true)}>Checkout</button>
+      </div>
+
+      <div>
+        {total > 0 ? (
+          <>
+          </>
+        ) : (
+          <p>Cart is empty</p>
+        )}
+      </div>
     </div>
   );
 };
