@@ -1,18 +1,22 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { fetchAddNewPizza, fetchAllPizza, fetchDeletePizza } from '../thunk/thunk.ts';
-import { Crud } from '../types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { fetchAddNewPizza, fetchAllPizza, fetchDeletePizza, getPizzaById } from '../thunk/thunk.ts';
+import { Crud, IPizzaApi } from '../types';
 
 interface CrudPizzaState{
-  crud: Crud[];
+  crud: IPizzaApi;
+  onePizza: Crud | null;
   loading: boolean;
   error: boolean;
 }
 
 export const initialState: CrudPizzaState = {
-  crud: [],
+  crud: {},
+  onePizza: null,
   loading: false,
   error: false,
 };
+
+
 
 const pizzaSlice = createSlice({
   name: "pizza",
@@ -47,17 +51,29 @@ const pizzaSlice = createSlice({
         state.loading = true;
         state.error = false;
       })
-      .addCase(fetchDeletePizza.fulfilled, (state, action) => {
+      .addCase(fetchDeletePizza.fulfilled, (state) => {
         state.loading = false;
-        state.crud = state.crud.filter(
-          (pizza) => pizza.id !== action.payload,
-        );
       })
       .addCase(fetchDeletePizza.rejected, (state) => {
         state.loading = false;
         state.error = true;
       })
+      .addCase(getPizzaById.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+        state.onePizza = null;
+      })
+      .addCase(getPizzaById.fulfilled, (state, action: PayloadAction<Crud | null>) => {
+        state.loading = false;
+        state.onePizza = action.payload
+      })
+      .addCase(getPizzaById.rejected, (state) => {
+        state.loading = false;
+        state.error = true;
+      })
   }
 })
+
+
 
 export const pizzaReducer = pizzaSlice.reducer;

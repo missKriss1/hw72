@@ -1,17 +1,14 @@
 import axiosApi from '../axiosApi.ts';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Crud } from '../types';
+import { Crud, IPizzaApi, } from '../types';
 
-export const fetchAllPizza = createAsyncThunk('pizza/fetchAllPizza', async () =>{
+export const fetchAllPizza = createAsyncThunk<IPizzaApi, void>('pizza/fetchAllPizza', async () =>{
   const response = await axiosApi('pizza.json');
-  const pizzaData = response.data
+  const pizzaData = response.data;
+
   if (pizzaData){
-    const pizzaInFormat = Object.keys(pizzaData).map((pizzaID) =>({
-      ...pizzaData[pizzaID],
-      id: pizzaID
-    }))
-    pizzaInFormat.reverse();
-    return pizzaInFormat;
+
+    return pizzaData;
   }
   return [];
 })
@@ -24,12 +21,12 @@ export const fetchAddNewPizza = createAsyncThunk('pizza/fetchAddNewPizza', async
 
 export const getPizzaById = createAsyncThunk<Crud | null, string>('pizza/getPizzaById', async(id: string)=>{
   const response = await axiosApi.get<Crud | null>(`pizza/${id}.json`);
-  if(!response.data) return null;
   return response.data || null
 })
 
 export const fetchEditPizza = createAsyncThunk<void, {id: string, pizza: Crud}>('pizza/fetchEditPizza', async ({id, pizza}) =>{
-  await axiosApi.put(`pizza/${id}.json`, {...pizza});
+  console.log(id, pizza);
+  await axiosApi.put(`pizza/${id}.json`, pizza);
 })
 
 export const fetchDeletePizza = createAsyncThunk<string, string>('pizza/fetchDeletePizza', async (id: string) =>{

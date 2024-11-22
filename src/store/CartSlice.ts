@@ -1,18 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Crud, IUserOrder, PizzaCart } from '../types';
-import { fetchDeletePizza } from '../thunk/thunk.ts';
+import { AddPizzaCart, IOrdersArray, IPizzas, } from '../types';
 import { addNewOrderUser, fetchAllOrdersUser } from '../thunk/thunkCart.ts';
 
 interface CartState {
- orders: PizzaCart [];
- users: IUserOrder []
+ orders: IOrdersArray[] | null;
+ orderCart: AddPizzaCart;
  loading: boolean;
  error: boolean
 }
 
 const initialState: CartState = {
- orders: [],
-  users: [],
+ orders: null,
+  orderCart: {},
   loading: false,
   error: false,
 }
@@ -21,50 +20,37 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addPizzaToOrder: (state, {payload: pizza}: PayloadAction<Crud>) =>{
-     let indexPizza = state.orders.findIndex(pizzaCart => pizzaCart.pizza.id === pizza.id);
+    addPizzaToOrder: (state, action: PayloadAction<IPizzas>) =>{
+      const pizzaToAdd = action.payload;
 
-     if(indexPizza === -1){
-       state.orders = [...state.orders,
-         {pizza, amount:1}];
-     }else{
-       const pizzaCopy = [...state.orders];
-       const copyPizzaCart = {...pizzaCopy[indexPizza]};
-       copyPizzaCart.amount++;
-       pizzaCopy[indexPizza] = copyPizzaCart;
-       state.orders = [...pizzaCopy];
-     }
+      if(state.orderCart[pizzaToAdd.id]) {
+        state.orderCart[pizzaToAdd.id]++
+      } else {
+        state.orderCart[pizzaToAdd.id] = 1;
+      }
     },
-    deletePizzaInCart: (state, {payload:pizza}: PayloadAction<Crud>) => {
-      state.orders = state.orders.filter((pizzaCart) => pizzaCart.pizza.id !== pizza.id);
+    deletePizzaInCart: (state, action: PayloadAction<IPizzas>) => {
+      const pizzaToDelete = action.payload;
+      if (state.orderCart[pizzaToDelete.id] > 0) {
+        state.orderCart[pizzaToDelete.id]--;
+      } else {
+        delete  state.orderCart[pizzaToDelete.id];
+      }
     },
     clearCart: (state) => {
-      state.orders = [];
+      state.orderCart = {};
     },
   },
   extraReducers: (builder) =>{
-    builder.
-      addCase(fetchDeletePizza.pending, (state) => {
-      state.loading = true;
-      state.error = false;
-       })
-      .addCase(fetchDeletePizza.fulfilled, (state, action) => {
-        state.loading = false;
-        state.orders = state.orders.filter(
-          (pizza) => pizza.pizza.id !== action.payload,
-        );
-      })
-      .addCase(fetchDeletePizza.rejected, (state) => {
-        state.loading = false;
-        state.error = true;
-      })
+    builder
       .addCase(fetchAllOrdersUser.pending, (state) => {
         state.loading = true;
         state.error = false;
+        state.orders = null
       })
-      .addCase(fetchAllOrdersUser.fulfilled, (state, action) => {
+      .addCase(fetchAllOrdersUser.fulfilled, (state, action: PayloadAction<IOrdersArray[] | null>,) => {
         state.loading = false;
-        state.orders = action.payload.flatMap((order) => order.orders);
+        state.orders = action.payload;
       })
       .addCase(fetchAllOrdersUser.rejected, (state) => {
         state.loading = false;

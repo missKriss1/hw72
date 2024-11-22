@@ -1,7 +1,7 @@
 
 import { Route, Routes, useLocation } from 'react-router-dom';
 import AddNewPizza from './container/AddNewPizza/AddNewPizza.tsx';
-import TollBar from './components /TollBar/TollBar.tsx';
+import TollBar from './components/TollBar/TollBar.tsx';
 import EditPizza from './container/EditPizza/EditPizza.tsx';
 import Admin from './container/Admin/Admin.tsx';
 import Home from './container/Home/Home.tsx';

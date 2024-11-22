@@ -1,34 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../app/store.ts';
-import { fetchAddNewPizza, fetchAllPizza, fetchEditPizza } from '../../thunk/thunk.ts';
-import { useNavigate } from 'react-router-dom';
 import { Crud } from '../../types';
+import ButtonSpinner from '../Ui/ButtonSpinner/ButtonSpinner.tsx';
 
 interface Props{
   onSubmit:(pizza: Crud) => void;
   isEdit: boolean;
-  pizza: Crud | null;
+  pizza?: Crud;
+  idPizza?: string | undefined;
+  isLoading: boolean
+}
+
+const initialStateByPizza ={
+  title:'',
+  price:  0,
+  image:  ''
 }
 
 
-const FormPizza: React.FC <Props> = ({onSubmit, isEdit, pizza}) => {
-  const initialStateByPizza ={
-    id: pizza?.id || '',
-    title: pizza?.title || '',
-    price: pizza?.price || 0,
-    image: pizza?.image || ''
-  }
-  const [newPizza, setNewPizza] = useState<Crud>(initialStateByPizza);
-  const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
+const FormPizza: React.FC <Props> = ({onSubmit, isEdit, pizza=initialStateByPizza, isLoading}) => {
+  const [newPizza, setNewPizza] = useState<Crud>(pizza);
 
-  useEffect(() =>{
-    if(isEdit && pizza){
-      setNewPizza(pizza);
-    }
-  }, [isEdit, pizza]);
 
   const changePizza = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewPizza((prev) => ({
@@ -39,15 +31,7 @@ const FormPizza: React.FC <Props> = ({onSubmit, isEdit, pizza}) => {
 
   const onSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(isEdit){
-      await dispatch(fetchEditPizza({ id: newPizza.id, pizza: newPizza }))
-    }else{
-      await dispatch(fetchAddNewPizza(newPizza));
-    }
-    await dispatch(fetchAllPizza())
-    navigate('/')
     onSubmit(newPizza)
-
   }
   return (
     <div>
@@ -77,7 +61,8 @@ const FormPizza: React.FC <Props> = ({onSubmit, isEdit, pizza}) => {
           onChange={changePizza}
         />
         <button className='btn bg-black text-white mt-3'>
-          {isEdit ? "Edit contact" : "Add contact"}
+          {isLoading ? <ButtonSpinner/> : null}
+          {isEdit ? "Edit" : "Add "}
         </button>
       </form>
     </div>

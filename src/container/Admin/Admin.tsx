@@ -2,23 +2,44 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../app/store.ts';
 import { fetchAllPizza, fetchDeletePizza } from '../../thunk/thunk.ts';
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { IPizzaApi, IPizzas } from '../../types';
+import ButtonSpinner from '../../components/Ui/ButtonSpinner/ButtonSpinner.tsx';
+
+
 
 const Admin = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const pizza = useSelector((state: RootState) => state.pizza.crud);
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() =>{
+    setIsLoading(true)
     dispatch(fetchAllPizza())
+    setIsLoading(false)
   }, [dispatch])
 
   const deletePizza = async (id: string) =>{
     await dispatch(fetchDeletePizza(id));
-  }
+  };
+
+  const makePizzaObjectToArray = (pizzaObj: IPizzaApi): IPizzas[] => {
+    if (pizzaObj) {
+      const pizzaInFormat = Object.keys(pizzaObj).map((pizzaID) =>({
+        ...pizzaObj[pizzaID],
+        id: pizzaID
+      }))
+      pizzaInFormat.reverse();
+      return pizzaInFormat;
+    } else {
+      return [];
+    }
+  };
+
   return (
     <div>
-      {pizza && pizza.length > 0 ? (
-        pizza.map((pizza) => (
+      {pizza && makePizzaObjectToArray(pizza).length > 0 ? (
+        makePizzaObjectToArray(pizza).map((pizza) => (
           <div key={pizza.id}>
             <div className="row border border-dark mt-3 w-50 p-3">
               <div className="col-3">
@@ -39,6 +60,7 @@ const Admin = () => {
                   </Link>
                 </button>
                 <button className='btn bg-danger text-white ms-2 mt-3' onClick={() => deletePizza(pizza.id)}>
+                  {isLoading ? <ButtonSpinner/> : null}
                   Delete
                 </button>
               </div>

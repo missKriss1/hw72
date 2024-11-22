@@ -14,7 +14,7 @@ const TollBar = () => {
             <div>
               <button className=" btn">
                 <Link
-                  to="/"
+                  to="/admin"
                   className="navbar-brand text-black fw-bold"
                 >
                   Dishes
