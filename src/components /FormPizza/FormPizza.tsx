@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../app/store.ts';
 import { fetchAddNewPizza, fetchAllPizza, fetchEditPizza } from '../../thunk/thunk.ts';
 import { useNavigate } from 'react-router-dom';
+import { Crud } from '../../types';
 
 interface Props{
   onSubmit:(pizza: Crud) => void;

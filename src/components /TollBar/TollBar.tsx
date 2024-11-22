@@ -22,7 +22,7 @@ const TollBar = () => {
               </button>
               <button className=" btn">
                 <Link
-                  to="/"
+                  to="/admin/orders"
                   className="navbar-brand text-black fw-bold"
                 >
                   Order

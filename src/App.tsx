@@ -5,6 +5,7 @@ import TollBar from './components /TollBar/TollBar.tsx';
 import EditPizza from './container/EditPizza/EditPizza.tsx';
 import Admin from './container/Admin/Admin.tsx';
 import Home from './container/Home/Home.tsx';
+import OrdersPizza from './container/OrdersPizza/OrdersPizza.tsx';
 
 const App = () => {
   const { pathname } = useLocation();
@@ -19,6 +20,7 @@ const App = () => {
           <Route path='/' element={<Home/>}/>
           <Route path='/admin' element={<Admin/>}/>
           <Route path='/add-new-pizza' element={<AddNewPizza/>}/>
+          <Route path="/admin/orders" element={<OrdersPizza />} />
           <Route path='/edit-pizza/:id' element={<EditPizza/>}/>
         </Routes>
       </main>

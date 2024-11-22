@@ -1,45 +1,36 @@
-interface Crud{
+interface Crud {
   id: string;
   title: string;
   price: number;
   image: string;
 }
 
-interface ICrudMutation {
-  title: string;
-  price: string;
-  image: string;
-}
-
-export interface PizzaCart {
-  pizza: Crud;
-  amount: number;
-}
-
-export type ApiCrud = Omit<Crud, 'id'>
-
-export interface ApiCrudes{
-  [id:string]: ApiCrud;
-}
-
-interface IUser{
+export interface IUserOrder {
   name: string;
   address: string;
   phone: string;
 }
 
-interface IOrderMutation{
-  user: IUser;
-  pizza: CratCurd[],
+export interface IOrderMutation {
+  user: IUserOrder;
+  pizzas: PizzaCart[];
 }
 
-interface OrderPizza{
+export interface IOrderAPI {
+  [id: string]: IOrderMutation;
+}
+export type ApiDish = Omit<Dish, 'id'>;
+
+export interface ApiDishes {
+  [id: string]: ApiDish;
+}
+export interface PizzaCart {
   pizza: Crud;
   amount: number;
 }
 
-export interface AllOrder{
+export interface IOrder extends IOrderMutation {
   id: string;
-  orders: OrderPizza[]
+  totalPrice: number;
+  pizza: PizzaCart[];
 }
-

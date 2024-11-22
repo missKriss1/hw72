@@ -1,8 +1,8 @@
 import React from 'react';
 import { PizzaCart } from '../../types';
-import { fetchDeletePizza } from '../../thunk/thunk.ts';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../app/store.ts';
+import { deletePizzaInCart } from '../../store/CartSlice.ts';
 
 interface IProps {
   pizzaCart: PizzaCart;
@@ -10,9 +10,9 @@ interface IProps {
 
 const CartItem: React.FC <IProps> = ({pizzaCart}) => {
   const dispatch: AppDispatch = useDispatch();
-  const deleteClickOrder = async (id: string) =>{
-    console.log(id)
-    await dispatch(fetchDeletePizza(id));
+
+  const deleteClickOrder =() =>{
+    dispatch(deletePizzaInCart(pizzaCart.pizza));
   }
   return (
     <div>
@@ -22,7 +22,7 @@ const CartItem: React.FC <IProps> = ({pizzaCart}) => {
           <div className="col-3">x{pizzaCart.amount}</div>
           <div className="col-3">{pizzaCart.pizza.price} KGS</div>
           <div className="col-3">
-            <button className="btn btn-danger" onClick={() =>deleteClickOrder(pizzaCart.pizza.id)}>x</button>
+            <button className="btn btn-danger" onClick={deleteClickOrder}>x</button>
           </div>
         </div>
       </div>

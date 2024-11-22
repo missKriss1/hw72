@@ -1,7 +1,6 @@
 import { PizzaCart } from '../../types';
 import { useState } from 'react';
 import ModalPizzaCart from '../Ui/ModalPizzaCart/ModalPizzaCart.tsx';
-import CartItem from './CartItem.tsx';
 
 interface Props {
   pizza: PizzaCart[];
@@ -19,23 +18,6 @@ const CartPizza: React.FC<Props> = ({ pizza }) => {
     setModal(true);
   };
 
-  let cartList = (
-    <div className="alert alert-primary" role="alert">
-      <h6 className="text-center my-4">No dish yet. Add something ...</h6>
-    </div>
-  )
-
-  if(pizza.length > 0){
-    cartList = (
-      <div>
-        {pizza.map(pizzaCart => (
-          <CartItem key={pizzaCart.pizza.id} pizzaCart={pizzaCart} />
-        ))}
-        <hr/>
-      </div>
-    )
-  }
-
   return (
     <div>
       <div>
@@ -46,7 +28,6 @@ const CartPizza: React.FC<Props> = ({ pizza }) => {
       {modal && (
         <ModalPizzaCart
           show={modal}
-          onClick={() => setModal(false)}
           closeModal={() => setModal(false)}
           title="Order Details"
           pizza={pizza}
@@ -56,7 +37,6 @@ const CartPizza: React.FC<Props> = ({ pizza }) => {
       <div>
         {total > 0 ? (
           <>
-            {cartList}
           </>
         ) : (
           <p>Cart is empty</p>
